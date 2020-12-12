@@ -1,0 +1,13 @@
+library(tidyr)
+library(dplyr)
+t  <- read.table("input2.txt")
+count(t)
+t <- mutate(t, minmax=as.character(V1), chr=as.character(V2), password=as.character(V3))
+t<-mutate(t, min=as.integer(str_split_fixed(t$minmax,"-", 2)[,1]), 
+             max=as.integer(str_split_fixed(t$minmax,"-", 2)[,2]))
+t<-mutate(t, chr=substr(chr,1,1))
+t<-mutate(t, cnt=str_count(password, chr))
+t<-mutate(t, inRange=str_count(password, chr) >= min & str_count(password, chr) <= max)
+count(t, inRange)
+t<-mutate(t, inPos=xor(substr(password,min,min)==chr,substr(password, max, max) == chr), first=substr(password, 1,1))
+count(t, inPos)
